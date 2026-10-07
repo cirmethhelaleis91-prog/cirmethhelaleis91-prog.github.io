@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MORISTA DOCUMENTS - คลังงานวิชาการ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Sarabun & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', 'Inter', sans-serif;
+        }
+        .drag-active {
+            border-color: #3b82f6 !important;
+            background-color: #eff6ff !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Navigation / Header -->
+    <header class="bg-slate-900 text-white shadow-md border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center md:justify-start gap-3">
+                    <i class="fa-solid me-2 fa-book-bookmark text-blue-400"></i>
+                    MORISTA DOCUMENTS
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">คลังเผยแพร่อย่างเป็นทางการสำหรับเอกสารและงานวิชาการ</p>
+            </div>
+            
+            <!-- Quick Stats Badge -->
+            <div class="flex items-center gap-3 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700/50">
+                <div class="text-right">
+                    <div class="text-xs text-slate-400">สถานะคลังข้อมูล</div>
+                    <div class="text-sm font-semibold text-emerald-400 flex items-center gap-1.5 justify-end">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full space-y-8">
+
+        <!-- Analytics Overview Cards -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Total Visitors Card -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex items-center gap-5 hover:shadow-md transition">
+                <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-500">ผู้เข้าชมทั้งหมด</p>
+                    <h3 id="stat-visitors" class="text-3xl font-bold text-slate-900 mt-0.5">0</h3>
+                    <p class="text-xs text-emerald-600 mt-1"><i class="fa-solid fa-arrow-trend-up me-1"></i>บันทึกจริงจากเครื่องนี้</p>
+                </div>
+            </div>
+
+            <!-- Total Downloads Card -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex items-center gap-5 hover:shadow-md transition">
+                <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-500">ยอดดาวน์โหลดรวม</p>
+                    <h3 id="stat-downloads" class="text-3xl font-bold text-slate-900 mt-0.5">0</h3>
+                    <p class="text-xs text-slate-400 mt-1">ครั้ง (ทุกไฟล์รวมกัน)</p>
+                </div>
+            </div>
+
+            <!-- Total Documents Card -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex items-center gap-5 hover:shadow-md transition sm:col-span-2 lg:col-span-1">
+                <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-500">เอกสารวิชาการในคลัง</p>
+                    <h3 id="stat-files" class="text-3xl font-bold text-slate-900 mt-0.5">0</h3>
+                    <p class="text-xs text-slate-400 mt-1">รายการพร้อมดาวน์โหลด</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Upload Section -->
+        <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i>
+                        อัปโหลดเอกสารวิชาการใหม่
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-0.5">เลือกไฟล์งานวิชาการเพื่อเพิ่มเข้าสู่ระบบ (ไฟล์จะถูกบันทึกไว้ในเครื่องของคุณ)</p>
+                </div>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div id="drop-zone" class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50/50 hover:bg-slate-50 transition cursor-pointer group relative">
+                <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip" multiple />
+                <div class="w-16 h-16 bg-white rounded-full shadow-sm border border-slate-200 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition text-blue-600 text-2xl">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                </div>
+                <h3 class="text-base font-semibold text-slate-800">คลิกเพื่อเลือกไฟล์ หรือ ลากไฟล์มาวางที่นี่</h3>
+                <p class="text-xs text-slate-500 mt-1">รองรับไฟล์ PDF, Word (DOCX), PowerPoint, TXT หรือ ZIP (สูงสุด 15MB ต่อไฟล์)</p>
+            </div>
+        </section>
+
+        <!-- Documents Repository Section -->
+        <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-blue-600"></i>
+                        รายการเอกสารวิชาการ
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-0.5">รายการเอกสารทั้งหมดที่พร้อมเผยแพร่</p>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="search-input" placeholder="ค้นหาชื่อเอกสาร..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                </div>
+            </div>
+
+            <!-- Documents Table / List Container -->
+            <div id="documents-container" class="divide-y divide-slate-100 min-h-[180px]">
+                <!-- Empty state shown via JS if no files -->
+            </div>
+        </section>
+
+        <!-- Editable Contact Info Section -->
+        <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-address-card text-blue-600"></i>
+                        ข้อมูลการติดต่อเจ้าของงานวิชาการ
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-0.5">สามารถแก้ไขเพื่ออัปเดตข้อมูลการติดต่อของคุณได้ตลอดเวลา</p>
+                </div>
+                <button id="toggle-edit-contact" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span id="edit-btn-text">แก้ไขข้อมูลติดต่อ</span>
+                </button>
+            </div>
+
+            <!-- View Mode -->
+            <div id="contact-view-mode" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">ชื่อ-นามสกุล / ตำแหน่งวิชาการ</div>
+                        <div id="display-name" class="font-semibold text-slate-800 text-base mt-0.5">ยังไม่ได้ระบุชื่อ</div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">หน่วยงาน / สถาบัน</div>
+                        <div id="display-affiliation" class="font-semibold text-slate-800 text-base mt-0.5">ยังไม่ได้ระบุสถาบัน</div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">อีเมลติดต่อ (Email)</div>
+                        <div id="display-email" class="font-semibold text-slate-800 text-base mt-0.5">ยังไม่ได้ระบุอีเมล</div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">เบอร์โทรศัพท์</div>
+                        <div id="display-phone" class="font-semibold text-slate-800 text-base mt-0.5">ยังไม่ได้ระบุเบอร์โทรศัพท์</div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 md:col-span-2">
+                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">เว็บไซต์ / ลิงก์โปรไฟล์งานวิจัย (เช่น ORCID / Google Scholar)</div>
+                        <div id="display-website" class="font-semibold text-blue-600 text-base mt-0.5 break-all">ยังไม่ได้ระบุลิงก์</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Mode Form (Hidden by default) -->
+            <form id="contact-edit-form" class="hidden space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อ-นามสกุล / ตำแหน่งวิชาการ</label>
+                        <input type="text" id="input-name" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none" placeholder="ดร. สมชาย ใจดี">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">หน่วยงาน / สถาบัน</label>
+                        <input type="text" id="input-affiliation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none" placeholder="มหาวิทยาลัย...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">อีเมลติดต่อ</label>
+                        <input type="email" id="input-email" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none" placeholder="example@university.ac.th">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">เบอร์โทรศัพท์</label>
+                        <input type="text" id="input-phone" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none" placeholder="081-234-5678">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">เว็บไซต์ / งานวิจัยเพิ่มเติม</label>
+                        <input type="text" id="input-website" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none" placeholder="https://scholar.google.com/...">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-contact" class="px-4 py-2 border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-medium rounded-xl transition">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow-sm transition">บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <p>© MORISTA DOCUMENTS - ระบบคลังเอกสารวิชาการออนไลน์</p>
+        </div>
+    </footer>
+
+    <script>
+        // State Keys for LocalStorage
+        const STORAGE_VISITORS_KEY = 'morista_doc_visitors';
+        const STORAGE_CONTACT_KEY = 'morista_doc_contact';
+        const STORAGE_DOCS_KEY = 'morista_doc_files';
+
+        // In-memory file cache for Object URLs / IndexedDB emulation
+        let documentsList = [];
+
+        // --- 1. Visitor Tracker ---
+        function initVisitorCounter() {
+            let visitors = parseInt(localStorage.getItem(STORAGE_VISITORS_KEY) || '0', 10);
+            
+            // Check session to count unique page visits per session
+            if (!sessionStorage.getItem('morista_session_active')) {
+                visitors += 1;
+                localStorage.setItem(STORAGE_VISITORS_KEY, visitors.toString());
+                sessionStorage.setItem('morista_session_active', 'true');
+            }
+            
+            document.getElementById('stat-visitors').innerText = visitors.toLocaleString();
+        }
+
+        // --- 2. Contact Information Management ---
+        const defaultContact = {
+            name: "ดร. มอริสตา (ตัวอย่างชื่อผู้เขียน)",
+            affiliation: "คณะวิทยาศาสตร์และเทคโนโลยี สถาบันการศึกษา",
+            email: "contact@morista-docs.ac.th",
+            phone: "02-123-4567",
+            website: "https://orcid.org/0000-0000-0000-0000"
+        };
+
+        function loadContactInfo() {
+            const saved = localStorage.getItem(STORAGE_CONTACT_KEY);
+            const contact = saved ? JSON.parse(saved) : defaultContact;
+
+            document.getElementById('display-name').innerText = contact.name || '-';
+            document.getElementById('display-affiliation').innerText = contact.affiliation || '-';
+            document.getElementById('display-email').innerText = contact.email || '-';
+            document.getElementById('display-phone').innerText = contact.phone || '-';
+            document.getElementById('display-website').innerText = contact.website || '-';
+
+            // Set inputs
+            document.getElementById('input-name').value = contact.name || '';
+            document.getElementById('input-affiliation').value = contact.affiliation || '';
+            document.getElementById('input-email').value = contact.email || '';
+            document.getElementById('input-phone').value = contact.phone || '';
+            document.getElementById('input-website').value = contact.website || '';
+        }
+
+        function setupContactEvents() {
+            const toggleBtn = document.getElementById('toggle-edit-contact');
+            const viewMode = document.getElementById('contact-view-mode');
+            const editForm = document.getElementById('contact-edit-form');
+            const cancelBtn = document.getElementById('btn-cancel-contact');
+
+            toggleBtn.addEventListener('click', () => {
+                const isHidden = editForm.classList.contains('hidden');
+                if (isHidden) {
+                    editForm.classList.remove('hidden');
+                    viewMode.classList.add('hidden');
+                    toggleBtn.classList.add('hidden');
+                }
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                editForm.classList.add('hidden');
+                viewMode.classList.remove('hidden');
+                toggleBtn.classList.remove('hidden');
+            });
+
+            editForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const updated = {
+                    name: document.getElementById('input-name').value.trim(),
+                    affiliation: document.getElementById('input-affiliation').value.trim(),
+                    email: document.getElementById('input-email').value.trim(),
+                    phone: document.getElementById('input-phone').value.trim(),
+                    website: document.getElementById('input-website').value.trim()
+                };
+
+                localStorage.setItem(STORAGE_CONTACT_KEY, JSON.stringify(updated));
+                loadContactInfo();
+
+                editForm.classList.add('hidden');
+                viewMode.classList.remove('hidden');
+                toggleBtn.classList.remove('hidden');
+            });
+        }
+
+        // --- 3. Document Management & File LocalStorage ---
+        function loadDocuments() {
+            const storedDocs = localStorage.getItem(STORAGE_DOCS_KEY);
+            if (storedDocs) {
+                try {
+                    documentsList = JSON.parse(storedDocs);
+                } catch(e) {
+                    documentsList = [];
+                }
+            } else {
+                documentsList = [];
+            }
+            renderDocuments();
+        }
+
+        function saveDocumentsState() {
+            localStorage.setItem(STORAGE_DOCS_KEY, JSON.stringify(documentsList));
+            updateStats();
+        }
+
+        function updateStats() {
+            const totalFiles = documentsList.length;
+            const totalDownloads = documentsList.reduce((acc, doc) => acc + (doc.downloads || 0), 0);
+
+            document.getElementById('stat-files').innerText = totalFiles.toLocaleString();
+            document.getElementById('stat-downloads').innerText = totalDownloads.toLocaleString();
+        }
+
+        function renderDocuments(searchFilter = '') {
+            const container = document.getElementById('documents-container');
+            const filtered = documentsList.filter(d => d.name.toLowerCase().includes(searchFilter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-12 text-center">
+                        <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 mb-3">
+                            <i class="fa-solid fa-folder-open text-xl"></i>
+                        </div>
+                        <p class="text-slate-600 font-medium">ยังไม่มีรายการเอกสารวิชาการ</p>
+                        <p class="text-slate-400 text-xs mt-1">อัปโหลดไฟล์แรกของคุณโดยใช้กล่องอัปโหลดด้านบน</p>
+                    </div>
+                `;
+                updateStats();
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((docItem) => {
+                const iconClass = getFileIcon(docItem.name);
+                html += `
+                    <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition">
+                        <div class="flex items-start gap-4">
+                            <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0 mt-0.5">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 text-base leading-snug">${escapeHtml(docItem.name)}</h4>
+                                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400 mt-1">
+                                    <span><i class="fa-regular fa-calendar me-1"></i>${docItem.date}</span>
+                                    <span><i class="fa-solid fa-hard-drive me-1"></i>${docItem.size}</span>
+                                    <span class="text-emerald-600 font-medium"><i class="fa-solid fa-download me-1"></i>ดาวน์โหลดแล้ว ${docItem.downloads || 0} ครั้ง</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 self-end sm:self-center">
+                            <button onclick="downloadFile('${docItem.id}')" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition shadow-sm">
+                                <i class="fa-solid fa-download"></i>
+                                <span>ดาวน์โหลด</span>
+                            </button>
+                            <button onclick="deleteFile('${docItem.id}')" title="ลบไฟล์" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateStats();
+        }
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (ext === 'pdf') return 'fa-solid fa-file-pdf text-rose-500';
+            if (['doc', 'docx'].includes(ext)) return 'fa-solid fa-file-word text-blue-600';
+            if (['ppt', 'pptx'].includes(ext)) return 'fa-solid fa-file-powerpoint text-amber-600';
+            if (['zip', 'rar'].includes(ext)) return 'fa-solid fa-file-zipper text-purple-600';
+            return 'fa-solid fa-file-lines text-slate-600';
+        }
+
+        function formatBytes(bytes, decimals = 1) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function handleFileUpload(files) {
+            if (!files || files.length === 0) return;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newDoc = {
+                        id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                        name: file.name,
+                        size: formatBytes(file.size),
+                        date: new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }),
+                        downloads: 0,
+                        dataUrl: e.target.result // Base64 data string stored locally
+                    };
+
+                    documentsList.unshift(newDoc);
+                    saveDocumentsState();
+                    renderDocuments();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function downloadFile(docId) {
+            const docItem = documentsList.find(d => d.id === docId);
+            if (!docItem) return;
+
+            // Increment download counter
+            docItem.downloads = (docItem.downloads || 0) + 1;
+            saveDocumentsState();
+            renderDocuments(document.getElementById('search-input').value);
+
+            // Trigger file download
+            const link = document.createElement('a');
+            link.href = docItem.dataUrl;
+            link.download = docItem.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function deleteFile(docId) {
+            if (confirm('คุณต้องการลบเอกสารนี้ออกจากคลังใช่หรือไม่?')) {
+                documentsList = documentsList.filter(d => d.id !== docId);
+                saveDocumentsState();
+                renderDocuments(document.getElementById('search-input').value);
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        // --- Setup Drag and Drop & Event Listeners ---
+        function setupUploadEvents() {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const searchInput = document.getElementById('search-input');
+
+            fileInput.addEventListener('change', (e) => {
+                handleFileUpload(e.target.files);
+                fileInput.value = ''; // Reset input
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('drag-active');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('drag-active');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFileUpload(files);
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                renderDocuments(e.target.value);
+            });
+        }
+
+        // --- Initialize Page ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initVisitorCounter();
+            loadContactInfo();
+            setupContactEvents();
+            loadDocuments();
+            setupUploadEvents();
+        });
+    </script>
+</body>
+</html>
